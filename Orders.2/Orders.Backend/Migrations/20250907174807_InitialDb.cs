@@ -36,7 +36,6 @@ namespace Orders.Backend.Migrations
             // qie es crear un indice? es una estructura de datos que mejora la velocidad de las operaciones en una tabla
             /// que es migrationbuilder.createindex? es un metodo que crea un indice en una tabla
             /// una vez que yo cree el indice no me va a dejar crear dos paises con el mismo nombre
-            /// que es ix
             migrationBuilder.CreateIndex(
                 name: "IX_Countries_Name",
                 table: "Countries",
