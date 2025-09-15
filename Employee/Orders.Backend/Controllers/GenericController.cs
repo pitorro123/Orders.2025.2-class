@@ -1,7 +1,7 @@
 ﻿using Employee.Backend.UnitsOfWork.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Taller1.Backend.Controllers;
+namespace Employee.Backend.Controllers;
 
 public class GenericController<T> : Controller where T : class
 {

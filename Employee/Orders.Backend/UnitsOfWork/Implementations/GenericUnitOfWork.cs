@@ -2,7 +2,7 @@
 using Employee.Backend.UnitsOfWork.Interfaces;
 using Employee.Shared.Responses1;
 
-namespace Taller1.Backend.UnitsOfWork.Implementations;
+namespace Employee.Backend.UnitsOfWork.Implementations;
 
 public class GenericUnitOfWork<T> : IGenericUnitOfWork<T> where T : class
 {
