@@ -1,31 +1,32 @@
-﻿using Employee.Backend.Data;
+﻿using Employee.Backend.UnitsOfWork.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Employee.Backend.Data;
+using Employee.Shared.Entities;
 
-namespace Employee.Backend.Controllers;
+namespace Taller1.Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeesController : ControllerBase
+public class EmployeesController : GenericController<Employee.Shared.Entities.Employee>
 {
-    private readonly DataContext _context;
+    private readonly IGenericUnitOfWork<Employee.Shared.Entities.Employee> _unitOfWork;
+    private readonly IEmployeesUnitOfWork _employeesUnitOfWork;
 
-    public EmployeesController(DataContext context)
+    public EmployeesController(IGenericUnitOfWork<Employee.Shared.Entities.Employee> unitOfWork, IEmployeesUnitOfWork employeesUnitOfWork) : base(unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
+        _employeesUnitOfWork = employeesUnitOfWork;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> PostAsync(Employee.Shared.Entities.Employee employee)
+    [HttpGet("{name}")]
+    public virtual async Task<IActionResult> GetAsync(string name)
     {
-        _context.Employess.Add(employee);
-        await _context.SaveChangesAsync();
-        return Ok(employee);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAsync()
-    {
-        return Ok(await _context.Employess.ToListAsync());
+        var action = await _employeesUnitOfWork.GetAsync(name);
+        if (action.WasSuccess)
+        {
+            return Ok(action.Result);
+        }
+        return BadRequest(action.Message);
     }
 }

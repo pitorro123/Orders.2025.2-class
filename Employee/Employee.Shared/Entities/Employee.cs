@@ -16,8 +16,10 @@ namespace Employee.Shared.Entities
         [MaxLength(30, ErrorMessage = "Elcampo{O} no puede tener mas de {1} caracteres")]
         public string LastName { get; set; } = null!;
 
+        [Display(Name = "Activo")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "FechaContratación")]
         public DateTime HireDate { get; set; } = DateTime.UtcNow;
 
         [Required(ErrorMessage = "El campo {0} es obligatorio")]

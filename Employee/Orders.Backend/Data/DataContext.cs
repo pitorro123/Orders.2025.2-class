@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Employee.Shared.Entities;
 
 namespace Employee.Backend.Data;
 
@@ -9,12 +8,13 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<Employee.Shared.Entities.Employee> Employess { get; set; }
+    public DbSet<Shared.Entities.Employee> Employess { get; set; }
+    public object Employees { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Employee.Shared.Entities.Employee>().HasIndex(x => x.Id).IsUnique();
+        modelBuilder.Entity<Shared.Entities.Employee>().Property(x => x.Savary).HasPrecision(18, 2);
         {
         }
     }
