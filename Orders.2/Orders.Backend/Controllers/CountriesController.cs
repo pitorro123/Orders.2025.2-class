@@ -5,13 +5,16 @@ using Orders.Share.Entities;
 
 namespace Orders.Backend.Controllers
 {
-    /// para que sirve este controlador? para manejar las peticiones relacionadas con los paises
-    /// ya que ruta va a responder? a la ruta api/countries uqe es la ruta que va a manejar este controlador
+    ///Marca esta clase como un controlador de API (maneja requests HTTP y devuelve JSON).
     [ApiController]
+    // Define la ruta base. "[controller]" se reemplaza por el nombre de la clase SIN "Controller".
+    // Es decir, la ruta será "api/countries".
     [Route("api/[controller]")]
     public class CountriesController : ControllerBase
     {
-        //inyectamos el datacontext para poder acceder a la base de datos
+        //inyectamos el datacontext para poder acceder a la base de datos, que ya registraste en Program.cs
+        //que es _context? es una variable privada que representa la instancia del datacontext
+        //que significa readonly?esta variable solo puede ser asignada en el constructor de la clase y no puede ser modificada despues
         private readonly DataContext _context;
 
         //Metodo publico que tiene el mismo nombre de la clase
@@ -24,6 +27,7 @@ namespace Orders.Backend.Controllers
             _context = context;
         }
 
+        // metodo para obtener todos los paises
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
