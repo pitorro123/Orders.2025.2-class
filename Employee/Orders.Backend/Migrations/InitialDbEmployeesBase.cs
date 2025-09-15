@@ -8,7 +8,7 @@ namespace Taller1.Backend.Migrations
 {
     [DbContext(typeof(DataContext)), Migration("20250908032056_InitialDbEmployees")]
     internal class InitialDbEmployeesBase
-    {
+    {//
         // Removed 'override' as there is no base method to override.
         protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
