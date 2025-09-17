@@ -5,6 +5,7 @@ namespace Orders.Backend.UnitsOfWork.Interfaces;
 
 public interface IGenericUnitOfWork<T> where T : class
 {
+    // tiene los mismos metodos que el repositorio generico pero en vez de repository es unit of work
     Task<ActionResponse<IEnumerable<T>>> GetAsync();
 
     Task<ActionResponse<T>> AddAsync(T model);

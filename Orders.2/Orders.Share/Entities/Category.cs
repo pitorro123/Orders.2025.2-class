@@ -3,7 +3,6 @@
 namespace Orders.Share.Entities;
 
 public class Category
-
 {
     public int Id { get; set; }
 

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Orders.Backend.Data;
+using Orders.Backend.Repositories.Implementations;
+using Orders.Backend.Repositories.Interfaces;
+using Orders.Backend.UnitsOfWork.Implementations;
+using Orders.Backend.UnitsOfWork.Interfaces;
 
 //var: inferencia de tipo en C#. Aquí el tipo real es WebApplicationBuilder.
 //WebApplication: Esta es la clase principal que se utiliza para inicializar y ejecutar la aplicación ASP.NET Core
@@ -23,6 +27,8 @@ builder.Services.AddSwaggerGen();
 //"name=LocalConnection": indica que la cadena de conexión se encuentra en el archivo de configuración (appsettings.json) bajo la clave "LocalConnection".
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
 
+builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 //que es var app = builder.Build();: Aquí es donde realmente construyes la aplicación a partir del builder que configuraste antes.
 //Después de llamar a Build(), obtienes una instancia de WebApplication que representa tu aplicación configurada y lista para ejecutarse.
 //que es app: es una instancia de WebApplication que representa la aplicación web configurada y lista para ejecutarse.
