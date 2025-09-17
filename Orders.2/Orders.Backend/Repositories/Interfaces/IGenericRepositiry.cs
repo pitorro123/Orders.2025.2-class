@@ -1,4 +1,6 @@
-﻿namespace Orders.Backend.Repositories.Interfaces
+﻿using Orders.Share.Responses;
+
+namespace Orders.Backend.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -7,7 +9,7 @@
         // la clase task es un generico y yo en el task le digo que voy a tener un metodo get con parametros
         // yo le digo que me devuelva un get de paises me veulvee un task de action response de paises
         //GetAsync recibe un id y devuelve una entidad T envuelta en una ActionResponse
-        Task<ActionResponse<T>> GetAsync(int id);
+        Task<Share.Responses.ActionResponse<T>> GetAsync(int id);
 
         // GetAsync devuelve una lista de entidades T envuelta en una ActionResponse
         // GetAsync me devuelve un task de action response de una lista de paises o categorias

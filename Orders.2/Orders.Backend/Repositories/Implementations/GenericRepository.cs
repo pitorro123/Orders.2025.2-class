@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Orders.Backend.Data;
 using Orders.Backend.Repositories.Interfaces;
+using Orders.Share.Responses;
 
 namespace Orders.Backend.Repositories.Implementations
 {
@@ -127,7 +128,7 @@ namespace Orders.Backend.Repositories.Implementations
 
         private ActionResponse<T> DbUpdateExceptionActionResponse() => new ActionResponse<T>
         {
-            Message = "No se pudo guardar porque tiene registros relacionados"
+            Message = "No se puso crear, ya existe"
         };
     }
 }

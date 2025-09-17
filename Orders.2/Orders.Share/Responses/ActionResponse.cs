@@ -1,6 +1,6 @@
 ﻿namespace Orders.Share.Responses
 {
-    internal class ActionResponse<T>
+    public class ActionResponse<T>
     {
         // si la respuesta fue todo bien devolvemos un true en wasSuccessful si fallo de volvemos false
         public bool WasSuccess { get; set; }

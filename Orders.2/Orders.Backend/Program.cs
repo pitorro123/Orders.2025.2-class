@@ -29,10 +29,23 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnec
 
 builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddTransient<SeedDb>();
+var app = builder.Build();
+SeedData(app);
+
+void SeedData(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using var scope = scopedFactory.CreateScope();
+    var service = scope.ServiceProvider.GetService<SeedDb>();
+    service!.SeedAsync().Wait();
+}
+
 //que es var app = builder.Build();: Aquí es donde realmente construyes la aplicación a partir del builder que configuraste antes.
 //Después de llamar a Build(), obtienes una instancia de WebApplication que representa tu aplicación configurada y lista para ejecutarse.
 //que es app: es una instancia de WebApplication que representa la aplicación web configurada y lista para ejecutarse.
-var app = builder.Build();
+
 //
 if (app.Environment.IsDevelopment())
 {
