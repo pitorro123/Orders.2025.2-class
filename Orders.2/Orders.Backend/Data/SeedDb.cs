@@ -1,4 +1,5 @@
-﻿using Orders.Share.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Orders.Share.Entities;
 
 // un alimentador a la base de datos me va a garantizar un minimo de registros y siempre me va garantizar que hay
 // una base de datos creada
@@ -21,13 +22,27 @@ public class SeedDb
 
     public async Task SeedAsync()
     {
+        //que mi programa siempre que arranque inicie por aca , lo que hace es que si no existe la bas de de datos la crea y si tiene migraciones
+        // pendientes las crea y si no tiene migraciones pendientes no hace nada
+
         await _context.Database.EnsureCreatedAsync();
+        await CheckCountriesFullAsync();
+        // estos 2 metodos es para que garantice que yo tengo paises y tengo categorias
         await CheckCountriesAsync();
         await CheckCategoriesAsync();
     }
 
+    private async Task CheckCountriesFullAsync()
+    {// si (!)=> no hay paises metame estos paises
+        if (!_context.Countries.Any())
+        {
+            var countriesSQLScript = File.ReadAllText("Data/CountriesStatesCities.sql");
+            await _context.Database.ExecuteSqlRawAsync(countriesSQLScript);
+        }
+    }
+
     private async Task CheckCountriesAsync()
-    {
+    {// si (!)=> no hay paises metame estos paises
         if (!_context.Countries.Any())
         {
             _context.Countries.Add(new Country { Name = "Colombia" });
@@ -38,7 +53,7 @@ public class SeedDb
     }
 
     private async Task CheckCategoriesAsync()
-    {
+    {// si (!)=> no hay categorias metame estas categorias
         if (!_context.Categories.Any())
         {
             _context.Categories.Add(new Category { Name = "Calzado" });

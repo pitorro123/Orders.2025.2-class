@@ -2,14 +2,13 @@
 using Orders.Backend.UnitsOfWork.Interfaces;
 using Orders.Share.Entities;
 
-namespace Orders.Backend.Controllers
+namespace Orders.Backend.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class CategoriesController : GenericController<Category>
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoriesController : GenericController<Category>
+    public CategoriesController(IGenericUnitOfWork<Category> unitOfWork) : base(unitOfWork)
     {
-        public CategoriesController(IGenericUnitOfWork<Category> unitOfWork) : base(unitOfWork)
-        {
-        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Orders.Backend.Data;
+using Orders.Backend.Helpers;
 using Orders.Backend.Repositories.Interfaces;
+using Orders.Share.DTOs;
 using Orders.Share.Responses;
 
 namespace Orders.Backend.Repositories.Implementations
@@ -19,6 +21,30 @@ namespace Orders.Backend.Repositories.Implementations
         {
             _context = context;
             _entity = _context.Set<T>();
+        }
+
+        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+
+            return new ActionResponse<IEnumerable<T>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
+
+        public virtual async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+            double count = await queryable.CountAsync();
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = (int)count
+            };
         }
 
         public virtual async Task<ActionResponse<T>> AddAsync(T entity)
@@ -128,7 +154,7 @@ namespace Orders.Backend.Repositories.Implementations
 
         private ActionResponse<T> DbUpdateExceptionActionResponse() => new ActionResponse<T>
         {
-            Message = "No se puso crear, ya existe"
+            Message = "Ya existe el registro"
         };
     }
 }

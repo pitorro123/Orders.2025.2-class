@@ -1,70 +1,92 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Orders.Backend.UnitsOfWork.Interfaces;
+using Orders.Share.DTOs;
 
-namespace Orders.Backend.Controllers
+namespace Orders.Backend.Controllers;
+
+public class GenericController<T> : Controller where T : class
 {
-    public class GenericController<T> : Controller where T : class
+    private readonly IGenericUnitOfWork<T> _unitOfWork;
+
+    public GenericController(IGenericUnitOfWork<T> unitOfWork)
     {
-        private readonly IGenericUnitOfWork<T> _unitOfWork;
+        _unitOfWork = unitOfWork;
+    }
 
-        public GenericController(IGenericUnitOfWork<T> unitOfWork)
+    [HttpGet("paginated")]
+    public virtual async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+    {
+        var action = await _unitOfWork.GetAsync(pagination);
+        if (action.WasSuccess)
         {
-            _unitOfWork = unitOfWork;
+            return Ok(action.Result);
         }
+        return BadRequest();
+    }
 
-        [HttpGet]
-        public virtual async Task<IActionResult> GetAsync()
+    [HttpGet("totalRecords")]
+    public virtual async Task<IActionResult> GetTotalRecordsAsync([FromQuery] PaginationDTO pagination)
+    {
+        var action = await _unitOfWork.GetTotalRecordsAsync(pagination);
+        if (action.WasSuccess)
         {
-            var action = await _unitOfWork.GetAsync();
-            if (action.WasSuccess)
-            {
-                return Ok(action.Result);
-            }
-            return BadRequest();
+            return Ok(action.Result);
         }
+        return BadRequest();
+    }
 
-        [HttpGet("{id}")]
-        public virtual async Task<IActionResult> GetAsync(int id)
+    [HttpGet]
+    public virtual async Task<IActionResult> GetAsync()
+    {
+        var action = await _unitOfWork.GetAsync();
+        if (action.WasSuccess)
         {
-            var action = await _unitOfWork.GetAsync(id);
-            if (action.WasSuccess)
-            {
-                return Ok(action.Result);
-            }
-            return NotFound();
+            return Ok(action.Result);
         }
+        return BadRequest(action.Message);
+    }
 
-        [HttpPost]
-        public virtual async Task<IActionResult> PostAsync(T model)
+    [HttpGet("{id}")]
+    public virtual async Task<IActionResult> GetAsync(int id)
+    {
+        var action = await _unitOfWork.GetAsync(id);
+        if (action.WasSuccess)
         {
-            var action = await _unitOfWork.AddAsync(model);
-            if (action.WasSuccess)
-            {
-                return Ok(action.Result);
-            }
-            return BadRequest(action.Message);
+            return Ok(action.Result);
         }
+        return NotFound();
+    }
 
-        [HttpPut]
-        public virtual async Task<IActionResult> PutAsync(T model)
+    [HttpPost]
+    public virtual async Task<IActionResult> PostAsync(T model)
+    {
+        var action = await _unitOfWork.AddAsync(model);
+        if (action.WasSuccess)
         {
-            var action = await _unitOfWork.UpdateAsync(model);
-            if (action.WasSuccess)
-            {
-                return Ok(action.Result);
-            }
-            return BadRequest(action.Message);
+            return Ok(action.Result);
         }
+        return BadRequest(action.Message);
+    }
 
-        [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> DeleteAsync(int id)
+    [HttpPut]
+    public virtual async Task<IActionResult> PutAsync(T model)
+    {
+        var action = await _unitOfWork.UpdateAsync(model);
+        if (action.WasSuccess)
         {
-            var action = await _unitOfWork.DeleteAsync(id);
-            if (action.WasSuccess)
-            {
-                return NoContent();
-            }
-            return BadRequest(action.Message);
+            return Ok(action.Result);
         }
+        return BadRequest(action.Message);
+    }
+
+    [HttpDelete("{id}")]
+    public virtual async Task<IActionResult> DeleteAsync(int id)
+    {
+        var action = await _unitOfWork.DeleteAsync(id);
+        if (action.WasSuccess)
+        {
+            return NoContent();
+        }
+        return BadRequest(action.Message);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Orders.Backend.Repositories.Interfaces;
 using Orders.Backend.UnitsOfWork.Interfaces;
+using Orders.Share.DTOs;
 using Orders.Share.Responses;
 
 namespace Orders.Backend.UnitsOfWork.Implementations;
@@ -8,10 +9,14 @@ public class GenericUnitOfWork<T> : IGenericUnitOfWork<T> where T : class
 {
     private readonly IGenericRepository<T> _repository;
 
-    public GenericUnitOfWork(IGenericRepository<T> repository)
+    public GenericUnitOfWork(IGenericRepository<T> repository) // si lo dejamos asi solo vamos a tener la inyeccion en el constructor
     {
         _repository = repository;
     }
+
+    public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination) => await _repository.GetAsync(pagination);
+
+    public virtual async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination) => await _repository.GetTotalRecordsAsync(pagination);
 
     public virtual async Task<ActionResponse<T>> AddAsync(T entity) => await _repository.AddAsync(entity);
 

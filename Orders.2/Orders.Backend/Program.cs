@@ -5,39 +5,36 @@ using Orders.Backend.Repositories.Implementations;
 using Orders.Backend.Repositories.Interfaces;
 using Orders.Backend.UnitsOfWork.Implementations;
 using Orders.Backend.UnitsOfWork.Interfaces;
+using System.Text.Json.Serialization;
 
-//var: inferencia de tipo en C#. Aquí el tipo real es WebApplicationBuilder.
-//WebApplication: Esta es la clase principal que se utiliza para inicializar y ejecutar la aplicación ASP.NET Core
-//CreateBuilder(args): crea un WebApplicationBuilder usando los argumentos de línea de comandos (args) para configurar
-//cosas (puerto, entorno, etc.).
-//Este objeto builder contien Configuration(lee appsettings.json, variables de entorno, secretos, etc.).
-//Services(el contenedor de inyección de dependencias). Logging(config de logs).
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
-// AddServices to the container: Aquí es donde registras servicios que tu aplicación va a usar, como controladores, bases de datos, autenticación, etc.
-// Controllers: son clases que manejan las solicitudes HTTP y devuelven respuestas HTTP. En ASP.NET Core, los controladores suelen heredar de ControllerBase o Controller.
-builder.Services.AddControllers();
-//builder.Services: es un IServiceCollection. Aquí “anotas” o registras servicios que luego podrás inyectar en tus clases
+// para evitar una redundancia ciclica en la serializacion de objetos JSON
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
-// Swagger: herramienta para documentar y probar APIs RESTful. Genera una UI interactiva para explorar y probar los endpoints de tu API.
 builder.Services.AddSwaggerGen();
-// Configuración de Entity Framework Core con SQL Server
-// AddDbContext: registra el DataContext (tu DbContext personalizado) en el contenedor de DI.
-//UseSqlServer: configura el DbContext para usar SQL Server como proveedor de base de datos.
-//"name=LocalConnection": indica que la cadena de conexión se encuentra en el archivo de configuración (appsettings.json) bajo la clave "LocalConnection".
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
+builder.Services.AddTransient<SeedDb>();
 
 builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddTransient<SeedDb>();
+
+builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
+builder.Services.AddScoped<ICountriesRepository, CountryRepository>();
+builder.Services.AddScoped<IStatesRepository, StatesRepository>();
+
+builder.Services.AddScoped<ICitiesUnitOfWork, CitiesUnitOfWork>();
+builder.Services.AddScoped<ICountriesUnitOfWork, CountriesUnitOfWork>();
+builder.Services.AddScoped<IStatesUnitOfWork, StatesUnitOfWork>();
+
 var app = builder.Build();
+
 SeedData(app);
 
 void SeedData(WebApplication app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-    using var scope = scopedFactory.CreateScope();
+    using var scope = scopedFactory!.CreateScope();
     var service = scope.ServiceProvider.GetService<SeedDb>();
     service!.SeedAsync().Wait();
 }

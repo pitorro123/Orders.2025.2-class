@@ -39,7 +39,31 @@ namespace Orders.Backend.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StateId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Orders.Share.Entities.Country", b =>
@@ -60,7 +84,63 @@ namespace Orders.Backend.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.State", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("States", (string)null);
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.City", b =>
+                {
+                    b.HasOne("Orders.Share.Entities.State", "State")
+                        .WithMany("Cities")
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("State");
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.State", b =>
+                {
+                    b.HasOne("Orders.Share.Entities.Country", "Country")
+                        .WithMany("States")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.Country", b =>
+                {
+                    b.Navigation("States");
+                });
+
+            modelBuilder.Entity("Orders.Share.Entities.State", b =>
+                {
+                    b.Navigation("Cities");
                 });
 #pragma warning restore 612, 618
         }
