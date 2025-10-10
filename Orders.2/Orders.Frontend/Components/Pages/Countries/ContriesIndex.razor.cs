@@ -13,6 +13,7 @@ namespace Orders.Frontend.Components.Pages.Countries
         protected override async Task OnInitializedAsync()
         {
             var httpResult = await Repository.GetAsync<List<Country>>("/api/countries");
+            Thread.Sleep(3000);
             countries = httpResult.Response;
         }
     }

@@ -1,14 +1,13 @@
 ﻿@page "/countries"
-
 <h3>Paises</h3>
 
 @if (countries == null)
 {
-    <p> Cargango...</p>
+    <Loading/>
 }
 else
 {
-    <table> 
+    <table border="1">
         <tr>
             <td>Paises</td>
         </tr>
