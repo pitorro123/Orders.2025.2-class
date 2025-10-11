@@ -26,6 +26,10 @@ public class StatesRepository : GenericRepository<State>, IStatesRepository
             .Include(x => x.Cities)
             .Where(x => x.Country!.Id == pagination.Id)
             .AsQueryable();
+        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        {
+            queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
+        }
 
         return new ActionResponse<IEnumerable<State>>
         {
@@ -42,6 +46,10 @@ public class StatesRepository : GenericRepository<State>, IStatesRepository
         var queryable = _context.States
             .Where(x => x.Country!.Id == pagination.Id)
             .AsQueryable();
+        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        {
+            queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
+        }
 
         double count = await queryable.CountAsync();
         return new ActionResponse<int>

@@ -45,21 +45,33 @@ public class SeedDb
     {// si (!)=> no hay paises metame estos paises
         if (!_context.Countries.Any())
         {
-            _context.Countries.Add(new Country { Name = "Colombia" });
-            _context.Countries.Add(new Country { Name = "Estados Unidos" });
+            await _context.SaveChangesAsync();
         }
-
-        await _context.SaveChangesAsync();
     }
 
     private async Task CheckCategoriesAsync()
     {// si (!)=> no hay categorias metame estas categorias
         if (!_context.Categories.Any())
         {
+            _context.Categories.Add(new Category { Name = "Apple" });
+            _context.Categories.Add(new Category { Name = "Autos" });
+            _context.Categories.Add(new Category { Name = "Belleza" });
             _context.Categories.Add(new Category { Name = "Calzado" });
+            _context.Categories.Add(new Category { Name = "Comida" });
+            _context.Categories.Add(new Category { Name = "Cosmeticos" });
+            _context.Categories.Add(new Category { Name = "Deportes" });
+            _context.Categories.Add(new Category { Name = "Erótica" });
+            _context.Categories.Add(new Category { Name = "Ferreteria" });
+            _context.Categories.Add(new Category { Name = "Gamer" });
+            _context.Categories.Add(new Category { Name = "Hogar" });
+            _context.Categories.Add(new Category { Name = "Jardín" });
+            _context.Categories.Add(new Category { Name = "Jugetes" });
+            _context.Categories.Add(new Category { Name = "Lenceria" });
+            _context.Categories.Add(new Category { Name = "Mascotas" });
+            _context.Categories.Add(new Category { Name = "Nutrición" });
+            _context.Categories.Add(new Category { Name = "Ropa" });
             _context.Categories.Add(new Category { Name = "Tecnología" });
+            await _context.SaveChangesAsync();
         }
-
-        await _context.SaveChangesAsync();
     }
 }
